@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# prepare fieldmaps
+
+echo 'Enter Subject Number'
+read subject
+
+base_dir=/home/wlin/Documents/2018_fMRI
+
+#average e1 and e2
+
+fslmaths ${base_dir}/fieldmaps/${subject}/FMAP_MAG_1.nii -add ${base_dir}/fieldmaps/${subject}/FMAP_MAG_2.nii -div 2 ${base_dir}/fieldmaps/${subject}/fieldmap_mag_avg.nii
+
+#bet average mag img
+bet ${base_dir}/fieldmaps/${subject}/fieldmap_mag_avg.nii.gz ${base_dir}/fieldmaps/${subject}/fieldmap_mag_avg_brain
+
+#erode the betted mag img
+fslmaths ${base_dir}/fieldmaps/${subject}/fieldmap_mag_avg_brain.nii.gz -ero ${base_dir}/fieldmaps/${subject}/fieldmap_mag_avg_brain_ero
+
+#fsl_prepare_fieldmap
+fsl_prepare_fieldmap SIEMENS ${base_dir}/fieldmaps/${subject}/FMAP_PHASE.nii ${base_dir}/fieldmaps/${subject}/fieldmap_mag_avg_brain_ero.nii.gz ${base_dir}/fieldmaps/${subject}/fieldmap_rads.nii 2.46
+
+

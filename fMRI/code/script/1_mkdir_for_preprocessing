@@ -1,0 +1,42 @@
+#! /bin/bash
+
+
+# script to make local directories for preprocessing
+
+echo 'Enter Subject Number'
+read subject
+
+
+base_dir=/home/wlin/Documents/2018_fMRI
+
+#function images
+
+mkdir -p ${base_dir}/funcimgs/both_vol_block/highres_func/${subject}
+mkdir -p ${base_dir}/funcimgs/both_vol_block/task_func/${subject}
+
+mkdir -p ${base_dir}/funcimgs/win_vol_block/highres_func/${subject}
+mkdir -p ${base_dir}/funcimgs/win_vol_block/task_func/${subject}
+
+mkdir -p ${base_dir}/funcimgs/loss_vol_block/highres_func/${subject}
+mkdir -p ${base_dir}/funcimgs/loss_vol_block/task_func/${subject}
+
+mkdir -p ${base_dir}/funcimgs/both_stable_block/highres_func/${subject}
+mkdir -p ${base_dir}/funcimgs/both_stable_block/task_func/${subject}
+
+#fieldmaps
+mkdir -p ${base_dir}/fieldmaps/${subject}
+
+#t1
+mkdir -p ${base_dir}/t1/${subject}
+
+#preprocessing
+
+mkdir -p ${base_dir}/preprocessing/pre_1/both_vol_block/${subject}
+
+mkdir -p ${base_dir}/preprocessing/pre_1/win_vol_block/${subject}
+
+mkdir -p ${base_dir}/preprocessing/pre_1/loss_vol_block/${subject}
+
+mkdir -p ${base_dir}/preprocessing/pre_1/both_stable_block/${subject}
+
+

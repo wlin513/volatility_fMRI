@@ -1,0 +1,39 @@
+#! /bin/bash
+
+#function which accepts arguements necessary to run a feat analysis for learning task.
+# Arguements are 1) subject name 2) visit number 3) run number 4) analysis to run
+
+echo 'Enter Subject Number'
+read subject
+
+declare -a blklist=("both_vol_block" "win_vol_block" "loss_vol_block" "both_stable_block")
+
+base_dir=/home/wlin/Documents/2018_fMRI
+
+mkdir -p ${base_dir}/design_files/pre_1/${subject}
+
+for i in `seq 0 3` ; do
+
+epidir="${base_dir}/funcimgs/${blklist[$i]}/task_func/${subject}/"
+refdir="${base_dir}/funcimgs/${blklist[$i]}/highres_func/${subject}/"
+desdir="${base_dir}/design_files/pre_1"
+tmpdir="${base_dir}/design_files/pre_1/${subject}"
+epi_image=`ls ${epidir}*`
+ref_image=`ls ${refdir}*`
+designfile="${desdir}/pre_1.fsf"
+
+nvols=`fslnvols ${epi_image}`
+tot_vox_num=`fslstats ${epi_image} -v | awk '{print $1}'`
+
+
+sed -e s@subject@${subject}@g	\
+	-e s@nvols@${nvols}@	\
+	-e s@totvoxnum@${tot_vox_num}@ \
+	-e s@blockname@${blklist[$i]}@g \
+	-e s@epi_image@${epi_image}@g \
+	-e s@ref_image@${ref_image}@g \
+	<${designfile} >${tmpdir}/${subject}_${blklist[$i]}.fsf
+
+feat ${tmpdir}/${subject}_${blklist[$i]}.fsf
+
+done

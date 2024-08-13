@@ -1,0 +1,33 @@
+#! /bin/bash
+
+# move and rename the imaging data from the rawdata folder
+
+echo 'Enter Subject Number'
+read subject
+
+base_dir=/home/wlin/Documents/2018_fMRI
+
+#t1
+
+bet ${base_dir}/t1/${subject}/STRUC.nii ${base_dir}/t1/${subject}/STRUC_brain.nii -f 0.45
+
+fsleyes ${base_dir}/t1/${subject}/STRUC.nii ${base_dir}/t1/${subject}/STRUC_brain.nii.gz -cm red-yellow &
+
+echo 'Are you satisfied with the betting? y/n'
+read ifok
+
+while [ "$ifok" == "n" ];
+do
+
+echo 'Enter threshold setting (from 0.45)'
+read thres
+
+bet ${base_dir}/t1/${subject}/STRUC.nii ${base_dir}/t1/${subject}/STRUC_brain.nii -f $thres
+fsleyes ${base_dir}/t1/${subject}/STRUC.nii ${base_dir}/t1/${subject}/STRUC_brain.nii.gz -cm red-yellow &
+
+echo 'Are you satisfied with the betting? y/n'
+read ifok
+
+done
+
+

@@ -1,0 +1,68 @@
+#! /bin/bash
+
+# move and rename the imaging data from the rawdata folder
+
+echo 'Enter Subject Number'
+read subject
+
+base_dir=/home/wlin/Documents/2018_fMRI
+
+if [ ! -e "${base_dir}/preprocessing/pre_1/both_stable_block/${subject}" ]; then
+
+${base_dir}/scripts/1_mkdir_for_preprocessing ${subject}
+
+fi
+
+#t1
+
+cp ${base_dir}/rawdata/${subject}/images_03_t1*.nii ${base_dir}/t1/${subject}/STRUC.nii
+
+#fieldmaps
+
+cp ${base_dir}/rawdata/${subject}/images*e1.nii ${base_dir}/fieldmaps/${subject}/FMAP_MAG_1.nii
+cp ${base_dir}/rawdata/${subject}/images*e2.nii ${base_dir}/fieldmaps/${subject}/FMAP_MAG_2.nii
+cp ${base_dir}/rawdata/${subject}/images*ph.nii ${base_dir}/fieldmaps/${subject}/FMAP_PHASE.nii
+
+#function
+while read line;
+do
+list+=($line);
+done <${base_dir}/funcimgs/blockorderlist.txt
+
+for i in "${!list[@]}"; do
+   if [ "${list[$i]}" == "${subject}" ] ; then
+       index=${i};
+   fi
+done
+
+fir=$((index+1))
+sec=$((index+2))
+thi=$((index+3))
+fou=$((index+4))
+
+declare -a blklist=("both_vol_block" "win_vol_block" "loss_vol_block" "both_stable_block")
+
+for i in `seq 1 4`; do
+
+if [ ${list[$fir]} -eq $i ]; then
+cp ${base_dir}/rawdata/${subject}/images_04*volatility1.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/highres_func/${subject}/
+cp ${base_dir}/rawdata/${subject}/images_05*volatility1.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/task_func/${subject}/
+fi
+
+if [ ${list[$sec]} -eq $i ]; then
+cp ${base_dir}/rawdata/${subject}/images_06*volatility2.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/highres_func/${subject}/
+cp ${base_dir}/rawdata/${subject}/images_07*volatility2.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/task_func/${subject}/
+fi
+
+if [ ${list[$thi]} -eq $i ]; then
+cp ${base_dir}/rawdata/${subject}/images_08*volatility3.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/highres_func/${subject}/
+cp ${base_dir}/rawdata/${subject}/images_09*volatility3.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/task_func/${subject}/
+fi
+
+if [ ${list[$fou]} -eq $i ]; then
+cp ${base_dir}/rawdata/${subject}/images_010*volatility4.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/highres_func/${subject}/
+cp ${base_dir}/rawdata/${subject}/images_011*volatility4.nii ${base_dir}/funcimgs/${blklist[$((i-1))]}/task_func/${subject}/
+fi
+
+done
+
